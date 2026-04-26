@@ -1,0 +1,5 @@
+firebase_credentials.json
+.env
+db.sqlite3
+__pycache__/
+*.pyc
