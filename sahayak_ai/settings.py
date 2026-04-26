@@ -31,7 +31,7 @@ try:
         if firebase_json:
             cred = credentials.Certificate(json.loads(firebase_json))
         else:
-            raise ValueError("FIREBASE_JSON not found")
+            cred = credentials.Certificate(os.getenv("FIREBASE_KEY_PATH"))
 
         firebase_admin.initialize_app(cred)
 
