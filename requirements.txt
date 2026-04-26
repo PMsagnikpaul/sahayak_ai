@@ -4,3 +4,4 @@ whitenoise
 python-dotenv
 firebase-admin
 djangorestframework
+django-cors-headers
