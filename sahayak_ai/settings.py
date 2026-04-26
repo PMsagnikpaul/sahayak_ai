@@ -17,6 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Firebase Admin Initialization ---
+import os, json
 import firebase_admin
 from firebase_admin import credentials, firestore
 from dotenv import load_dotenv
@@ -25,9 +26,17 @@ load_dotenv()
 
 try:
     if not firebase_admin._apps:
-        cred = credentials.Certificate(os.getenv("FIREBASE_KEY_PATH"))
+        firebase_json = os.getenv("FIREBASE_JSON")
+
+        if firebase_json:
+            cred = credentials.Certificate(json.loads(firebase_json))
+        else:
+            raise ValueError("FIREBASE_JSON not found")
+
         firebase_admin.initialize_app(cred)
+
     print("Firebase Admin SDK initialized successfully!")
+
 except Exception as e:
     print(f"Warning: Firebase Admin SDK failed to initialize. Error: {e}")
 # -------------------------------------
