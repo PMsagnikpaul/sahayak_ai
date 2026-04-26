@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahayak AI - Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #f97316;
+            --primary-hover: #ea580c;
+            --bg-color: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1.5rem;
+            height: 100%;
+        }
+
+        /* Profile Section */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), #fb923c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+        .profile-info h3 { margin: 0; font-weight: 700; }
+        .profile-info p { margin: 0; color: var(--text-muted); }
+        .badge-role {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Stats */
+        .stat-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+
+        /* Quick Actions */
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 12px;
+            padding: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-action:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        /* Request Cards */
+        .req-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #64748b;
+        }
+        .req-urgency-high { border-left-color: #ef4444; }
+        .req-urgency-medium { border-left-color: #f59e0b; }
+        .req-urgency-low { border-left-color: #10b981; }
+        
+        .req-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .req-title { font-weight: 600; margin: 0; text-transform: capitalize;}
+        .req-status { font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: rgba(255,255,255,0.1); }
+        .req-details p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+        
+        .insights-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #10b981;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            border: 1px dashed rgba(16, 185, 129, 0.3);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title i { color: var(--primary); }
+
+        /* Smooth Modal Transitions */
+        .modal.fade .modal-dialog {
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+  <div id="liveToast" class="toast align-items-center text-white bg-success border-0 glass-card" style="padding: 0.5rem;" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body fw-medium" id="toastMessage" style="font-size: 1.05rem;">
+        Notification message
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">Sahayak AI</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <button class="nav-link btn btn-link text-danger fw-bold" id="logoutBtn" style="text-decoration: none;">Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+    <!-- Row 1: Profile & Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4 mb-lg-0">
+            <div class="glass-card">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <div class="profile-header">
+                            <div class="profile-avatar" id="userAvatar">U</div>
+                            <div class="profile-info">
+                                <h3 id="userName">Loading User...</h3>
+                                <p id="userEmail">user@example.com</p>
+                                <div class="mt-2" id="roleBadges">
+                                    <span class="badge bg-primary badge-role">Requester</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <div class="stat-num" id="statRequests">0</div>
+                                    <div class="stat-label">Requests Made</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <div class="stat-num" id="statHelped">0</div>
+                                    <div class="stat-label">Help Given</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass-card">
+                <h4 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h4>
+                <div class="d-flex flex-column gap-3">
+                    <button class="btn btn-action" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <i class="fa-solid fa-plus"></i> Create Request
+                    </button>
+                    <button class="btn btn-action" data-bs-toggle="modal" data-bs-target="#volunteerModal">
+                        <i class="fa-solid fa-user-plus"></i> Become Volunteer
+                    </button>
+                    <button class="btn btn-action" id="runMatchingBtn" style="border-color: #10b981; color: #10b981;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Matching
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Requests & Volunteer Tasks -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="glass-card">
+                <h4 class="section-title"><i class="fa-solid fa-hand-holding-hand"></i> My Requests</h4>
+                <div id="myRequestsContainer">
+                    <!-- Dynamic Requests Here -->
+                    <div class="text-center text-muted py-4">Loading requests...</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="glass-card">
+                <h4 class="section-title"><i class="fa-solid fa-clipboard-check"></i> My Volunteer Tasks</h4>
+                <div id="myTasksContainer">
+                    <!-- Dynamic Tasks Here -->
+                    <div class="text-center text-muted py-4">Loading tasks...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Insights & Matching -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="glass-card text-center">
+                <h4 class="section-title justify-content-center"><i class="fa-solid fa-lightbulb"></i> Insights</h4>
+                <div class="insights-text mt-3">
+                    <i class="fa-solid fa-rocket"></i> You are helping build a smarter and faster support system.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals for Forms (to keep UI clean) -->
+
+<!-- Create Request Modal -->
+<div class="modal fade" id="requestModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold">New Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="alertPlaceholderRequest"></div>
+        <form id="requestForm">
+            <div class="mb-3">
+                <label class="form-label text-dark">Type of Request</label>
+                <select class="form-select bg-white text-dark" id="reqType" required>
+                    <option value="" disabled selected>Select type</option>
+                    <option value="medical">Medical</option>
+                    <option value="food">Food</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-dark">Urgency</label>
+                <select class="form-select bg-white text-dark" id="reqUrgency" required>
+                    <option value="" disabled selected>Select urgency level</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-dark">Age Group</label>
+                <select class="form-select bg-white text-dark" id="reqAgeGroup" required>
+                    <option value="" disabled selected>Select age group</option>
+                    <option value="elderly">Elderly</option>
+                    <option value="adult">Adult</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-dark">Location</label>
+                <input type="text" class="form-control bg-white text-dark" id="reqLocation" placeholder="Enter full address" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submitReqBtn">Submit Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Volunteer Modal -->
+<div class="modal fade" id="volunteerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold">Register Yourself as Volunteer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="alertPlaceholderVolunteer"></div>
+        <form id="volunteerForm">
+            <div class="mb-3">
+                <label class="form-label text-dark">Skills (comma separated)</label>
+                <input type="text" class="form-control bg-white text-dark" id="volSkills" placeholder="e.g. First Aid, Cooking" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-dark">Location</label>
+                <input type="text" class="form-control bg-white text-dark" id="volLocation" placeholder="Enter full address" required>
+            </div>
+            <div class="mb-4 form-check">
+                <input type="checkbox" class="form-check-input border-dark" id="volAvailability" required>
+                <label class="form-check-label text-dark" for="volAvailability">I am currently available to help</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submitVolBtn">Update Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Firebase Logic -->
+{% load static %}
+<script type="module">
+    import { auth, db } from "{% static 'firebase.js' %}";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+    import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Toast Logic ---
+        const showToast = (message, type = 'success') => {
+            const toastEl = document.getElementById('liveToast');
+            const toastBody = document.getElementById('toastMessage');
+            toastBody.textContent = message;
+            
+            toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+            toastEl.classList.add(`bg-${type}`);
+            
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        };
+
+        // --- Logout ---
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await signOut(auth);
+                window.location.href = "{% url 'home' %}";
+            });
+        }
+
+        let currentUser = null;
+
+        // --- Auth State ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // Fetch User Details from Firestore
+                const q = query(collection(db, "users"), where("email", "==", user.email));
+                const querySnapshot = await getDocs(q);
+                let userData = { name: "User" };
+                window.currentUserDocId = null;
+                
+                querySnapshot.forEach((docSnap) => { 
+                    userData = docSnap.data(); 
+                    window.currentUserDocId = docSnap.id;
+                });
+                
+                document.getElementById('userName').textContent = userData.name || "Volunteer";
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userAvatar').textContent = (userData.name || "U").charAt(0).toUpperCase();
+
+                // Render badges dynamically
+                let roles = userData.roles || (userData.role ? [userData.role] : ["requester"]);
+                let badgesHtml = '';
+                if (roles.includes("requester") || roles.includes("Requester")) {
+                    badgesHtml += '<span class="badge bg-primary badge-role me-1">Requester</span>';
+                }
+                if (roles.includes("volunteer") || roles.includes("Volunteer")) {
+                    badgesHtml += '<span class="badge bg-success badge-role">Volunteer</span>';
+                }
+                const badgeContainer = document.getElementById('roleBadges');
+                if (badgeContainer) badgeContainer.innerHTML = badgesHtml;
+
+                loadDashboardData();
+            } else {
+                // Not logged in, redirect
+                window.location.href = "{% url 'home' %}";
+            }
+        });
+
+        // --- Load Dashboard Data ---
+        async function loadDashboardData() {
+            if (!currentUser) return;
+            
+            // 1. Load User Requests (From Django API)
+            const reqContainer = document.getElementById('myRequestsContainer');
+            try {
+                const response = await fetch(`/my-requests/?user_id=${currentUser.uid}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const reqSnap = result.data;
+                    let reqHtml = '';
+                    let reqCount = 0;
+                    
+                    reqSnap.forEach((data) => {
+                        reqCount++;
+                        const urgencyClass = data.urgency === 'high' ? 'req-urgency-high' : (data.urgency === 'medium' ? 'req-urgency-medium' : 'req-urgency-low');
+                        const urgencyBadgeColor = data.urgency === 'high' ? 'danger' : (data.urgency === 'medium' ? 'warning text-dark' : 'success');
+                        const statusClass = data.status === 'assigned' ? 'text-success' : 'text-warning';
+                        reqHtml += `
+                            <div class="req-card ${urgencyClass}">
+                                <div class="req-header">
+                                    <h5 class="req-title">${data.type}</h5>
+                                    <span class="req-status ${statusClass}">${data.status.toUpperCase()}</span>
+                                </div>
+                                <div class="req-details">
+                                    <p><i class="fa-solid fa-location-dot"></i> ${data.location}</p>
+                                    <p><i class="fa-solid fa-clock"></i> Urgency: <span class="badge bg-${urgencyBadgeColor} ms-1">${data.urgency}</span></p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('statRequests').textContent = reqCount;
+                    
+                    if (reqCount === 0) {
+                        reqHtml = '<div class="text-center text-muted py-3">No requests found. Click "Create Request" to start.</div>';
+                    }
+                    reqContainer.innerHTML = reqHtml;
+                } else {
+                    reqContainer.innerHTML = `<div class="text-center text-muted py-3">Error: ${result.message}</div>`;
+                }
+
+            } catch (error) {
+                console.log(error);
+                reqContainer.innerHTML = '<div class="text-center text-muted py-3">Error loading requests.</div>';
+            }
+
+            // 2. Load Volunteer Tasks (From Django API)
+            const taskContainer = document.getElementById('myTasksContainer');
+            try {
+                const response = await fetch(`/my-tasks/?user_id=${currentUser.uid}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const taskSnap = result.data;
+                    let taskHtml = '';
+                    let taskCount = 0;
+                    
+                    taskSnap.forEach((taskItem) => {
+                        taskCount++;
+                        const data = taskItem.request_details || {};
+                        const urgencyClass = data.urgency === 'high' ? 'req-urgency-high' : (data.urgency === 'medium' ? 'req-urgency-medium' : 'req-urgency-low');
+                        const urgencyBadgeColor = data.urgency === 'high' ? 'danger' : (data.urgency === 'medium' ? 'warning text-dark' : 'success');
+                        taskHtml += `
+                            <div class="req-card ${urgencyClass}">
+                                <div class="req-header">
+                                    <h5 class="req-title">${data.type || 'Unknown'}</h5>
+                                    <span class="req-status text-success">Assigned</span>
+                                </div>
+                                <div class="req-details">
+                                    <p><i class="fa-solid fa-location-dot"></i> Location: ${data.location || 'N/A'}</p>
+                                    <p><i class="fa-solid fa-clock"></i> Urgency: <span class="badge bg-${urgencyBadgeColor} ms-1">${data.urgency}</span></p>
+                                    <p class="mt-1"><i class="fa-solid fa-user"></i> Requester ID: ${data.userId || 'Unknown'}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('statHelped').textContent = taskCount;
+                    
+                    if (taskCount === 0) {
+                        taskHtml = '<div class="text-center text-muted py-3">No tasks assigned yet.</div>';
+                    }
+                    taskContainer.innerHTML = taskHtml;
+                } else {
+                    taskContainer.innerHTML = `<div class="text-center text-muted py-3">Error: ${result.message}</div>`;
+                }
+
+            } catch (error) {
+                console.log(error);
+                taskContainer.innerHTML = '<div class="text-center text-muted py-3">Error loading tasks.</div>';
+            }
+        }
+
+        // --- Form Submissions ---
+        document.getElementById('requestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+            
+            const submitBtn = document.getElementById('submitReqBtn');
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+
+            const reqData = {
+                type: document.getElementById('reqType').value,
+                urgency: document.getElementById('reqUrgency').value,
+                ageGroup: document.getElementById('reqAgeGroup').value,
+                location: document.getElementById('reqLocation').value,
+                userId: currentUser.uid,
+                status: 'pending'
+            };
+            
+            try {
+                // 1. Save data directly to Firebase
+                const docRef = await addDoc(collection(db, "requests"), {
+                    ...reqData,
+                    createdAt: serverTimestamp()
+                });
+
+                // 2. Ping the Django Backend API (Optional, for triggering backend logic later)
+                await fetch('/create-request/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...reqData, id: docRef.id })
+                });
+                
+                // Show success toast
+                showToast('Request submitted successfully!', 'success');
+                
+                // Refresh the UI
+                loadDashboardData();
+                document.getElementById('requestForm').reset();
+                
+                // Close modal
+                const reqModal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+                if(reqModal) reqModal.hide();
+                
+            } catch (error) {
+                console.error('Error submitting request:', error);
+                showToast('An error occurred while saving the request.', 'danger');
+            } finally {
+                submitBtn.textContent = 'Submit Request';
+                submitBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('volunteerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+            
+            const submitBtn = document.getElementById('submitVolBtn');
+            submitBtn.textContent = 'Updating...';
+            submitBtn.disabled = true;
+
+            const volData = {
+                skills: document.getElementById('volSkills').value.split(',').map(s=>s.trim()),
+                location: document.getElementById('volLocation').value,
+                availability: document.getElementById('volAvailability').checked,
+                userId: currentUser.uid
+            };
+            
+            try {
+                // 1. Save data directly to Firebase
+                const docRef = await addDoc(collection(db, "volunteers"), {
+                    ...volData,
+                    createdAt: serverTimestamp()
+                });
+
+                // Update user roles in users collection
+                if (window.currentUserDocId) {
+                    const userRef = doc(db, "users", window.currentUserDocId);
+                    await updateDoc(userRef, {
+                        roles: arrayUnion("volunteer")
+                    });
+                    
+                    // Optimistically update the UI Badge
+                    const badgeContainer = document.getElementById('roleBadges');
+                    if (badgeContainer && !badgeContainer.innerHTML.includes('Volunteer')) {
+                        badgeContainer.innerHTML += '<span class="badge bg-success badge-role">Volunteer</span>';
+                    }
+                }
+
+                // 2. Ping the Django Backend API
+                await fetch('/register-volunteer/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...volData, id: docRef.id })
+                });
+
+                showToast('Volunteer registered successfully!', 'success');
+                loadDashboardData();
+                document.getElementById('volunteerForm').reset();
+                
+                const volModal = bootstrap.Modal.getInstance(document.getElementById('volunteerModal'));
+                if(volModal) volModal.hide();
+
+            } catch (error) {
+                console.error('Error registering volunteer:', error);
+                showToast('An error occurred while registering as a volunteer.', 'danger');
+            } finally {
+                submitBtn.textContent = 'Update Profile';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --- Run AI Matching ---
+        const runMatchingBtn = document.getElementById('runMatchingBtn');
+        if (runMatchingBtn) {
+            runMatchingBtn.addEventListener('click', async () => {
+                runMatchingBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running...';
+                runMatchingBtn.disabled = true;
+                
+                try {
+                    const response = await fetch('/run-matching/', { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        showToast(result.message, 'success');
+                        loadDashboardData(); // Refresh UI
+                    } else {
+                        showToast('Error: ' + result.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error("Matching Error:", error);
+                    showToast("Failed to connect to the matching engine.", "danger");
+                } finally {
+                    runMatchingBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Matching';
+                    runMatchingBtn.disabled = false;
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
