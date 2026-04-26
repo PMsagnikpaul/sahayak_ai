@@ -19,16 +19,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --- Firebase Admin Initialization ---
 import firebase_admin
 from firebase_admin import credentials, firestore
+from dotenv import load_dotenv
+
+load_dotenv()
 
 try:
-    # Look for the credentials file in the base directory
-    cred_path = os.path.join(BASE_DIR, 'firebase_credentials.json')
     if not firebase_admin._apps:
-        cred = credentials.Certificate(cred_path)
+        cred = credentials.Certificate(os.getenv("FIREBASE_KEY_PATH"))
         firebase_admin.initialize_app(cred)
     print("Firebase Admin SDK initialized successfully!")
 except Exception as e:
-    print(f"Warning: Firebase Admin SDK failed to initialize. Ensure firebase_credentials.json is in the root directory. Error: {e}")
+    print(f"Warning: Firebase Admin SDK failed to initialize. Error: {e}")
 # -------------------------------------
 
 # Quick-start development settings - unsuitable for production
